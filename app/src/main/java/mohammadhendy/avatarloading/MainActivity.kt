@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        lifecycle.addObserver(Avatar)
         loadNextImage(currentImageId++)
         next_button.setOnClickListener {
             loadNextImage(currentImageId++)
@@ -22,5 +23,10 @@ class MainActivity : AppCompatActivity() {
             .placeholder(R.drawable.ic_person_black_24dp)
             .errorImage(R.drawable.ic_error)
             .into(avatar_image_view)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(Avatar)
     }
 }

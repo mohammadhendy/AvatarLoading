@@ -8,6 +8,7 @@ import mohammadhendy.avatarloading.download.LoadingError
 import mohammadhendy.avatarloading.download.DownloadProgressCallback
 import mohammadhendy.avatarloading.download.DownloadResultCallback
 import mohammadhendy.avatarloading.download.ImageDownloader
+import mohammadhendy.avatarloading.utils.checkInterrupted
 
 class ImageLoadingTask(
     private val bitmapUtils: BitmapUtils,
@@ -21,28 +22,33 @@ class ImageLoadingTask(
     }
     override fun run() {
         try {
+            checkInterrupted()
             if (request.placeholder != null) {
                 imageViewTask.bitmap = bitmapUtils.decodeResource(request.placeholder)?.let { bitmapUtils.getCircle(it) }
                 mainThreadHandler.post(imageViewTask)
             }
             val imageDownloader = ImageDownloader(request.url, this, this)
             imageDownloader.download()
-        } catch (e: Exception) {
+        } catch (e: InterruptedException) {
             Logger.e(TAG, "Exception when run Task", e)
         }
     }
 
     override fun onDownloadCompleted(data: ByteArray) {
+        checkInterrupted()
         bitmapUtils.decodeSampledBitmap(data, request.requiredWidth, request.requiredHeight)?.let {
             imageViewTask.bitmap = bitmapUtils.getCircle(it)
         }
         imageViewTask.showProgress = false
+        checkInterrupted()
         mainThreadHandler.post(imageViewTask)
     }
 
     override fun onDownloadError(error: LoadingError) {
-        displayErrorTask?.let {
-            mainThreadHandler.post(it)
+        if (error != LoadingError.Cancelled) {
+            displayErrorTask?.let {
+                mainThreadHandler.post(it)
+            }
         }
     }
 

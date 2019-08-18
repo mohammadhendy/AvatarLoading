@@ -9,8 +9,8 @@ import android.graphics.Paint.Cap
 
 
 class ImageProgressDrawable(
-    private val progressColor: Int = Color.parseColor("#FF4081"),
-    private val progressBackgroundColor: Int = Color.parseColor("#757575"),
+    private val progressColor: Int = Color.parseColor("#80FF08"),
+    private val progressBackgroundColor: Int = Color.parseColor("#B3B3B3"),
     private val maxProgress: Int = 100,
     private val minProgress: Int = 0,
     var showProgress: Boolean
@@ -57,6 +57,32 @@ class ImageProgressDrawable(
     private val arcRect = RectF()
     private val imageRect = RectF()
 
+    override fun draw(canvas: Canvas) {
+        calcRectScale()
+        bitmap?.let {
+            canvas.drawBitmap(it, null, imageRect, imagePaint)
+        }
+
+        if (showProgress && progress > 0) {
+            canvas.drawArc(arcRect, 270f, 360f, false, arcPaintBackground)
+            canvas.drawArc(arcRect, 270f, (360 * (progress / 100f)), false, arcPaintPrimary)
+        }
+    }
+
+    override fun setAlpha(alpha: Int) {
+        arcPaintPrimary.alpha = alpha
+        arcPaintBackground.alpha = alpha
+        imagePaint.alpha = alpha
+    }
+
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        arcPaintPrimary.colorFilter = colorFilter
+        arcPaintBackground.colorFilter = colorFilter
+        imagePaint.colorFilter = colorFilter
+    }
+
     /**
      * This method does not scale Bitmap and so there is inconsistency between Loaded Image and placeholder
      */
@@ -91,31 +117,5 @@ class ImageProgressDrawable(
 
         arcRect.set(left, top, left + arcDiameter, top + arcDiameter)
         imageRect.set(left, top, left + arcDiameter, top + arcDiameter)
-    }
-
-    override fun draw(canvas: Canvas) {
-        calcRectScale()
-        bitmap?.let {
-            canvas.drawBitmap(it, null, imageRect, imagePaint)
-        }
-
-        if (showProgress && progress > 0) {
-            canvas.drawArc(arcRect, 270f, 360f, false, arcPaintBackground)
-            canvas.drawArc(arcRect, 270f, (360 * (progress / 100f)), false, arcPaintPrimary)
-        }
-    }
-
-    override fun setAlpha(alpha: Int) {
-        arcPaintPrimary?.alpha = alpha
-        arcPaintBackground?.alpha = alpha
-        imagePaint?.alpha = alpha
-    }
-
-    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-    override fun setColorFilter(colorFilter: ColorFilter?) {
-        arcPaintPrimary?.colorFilter = colorFilter
-        arcPaintBackground?.colorFilter = colorFilter
-        imagePaint?.colorFilter = colorFilter
     }
 }

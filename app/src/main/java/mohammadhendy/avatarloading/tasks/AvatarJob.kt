@@ -2,18 +2,24 @@ package mohammadhendy.avatarloading.tasks
 
 import android.widget.ImageView
 import mohammadhendy.avatarloading.avatar.Avatar
+import mohammadhendy.avatarloading.avatar.Request
 import mohammadhendy.avatarloading.avatar.RequestBuilder
+import java.util.concurrent.Future
 
-class TaskBuilder(private val avatar: Avatar) {
+class AvatarJob(private val avatar: Avatar) {
 
+    private lateinit var future: Future<*>
+    private lateinit var request: Request
     private val requestBuilder: RequestBuilder =
         RequestBuilder()
 
     fun into(imageView: ImageView) {
         requestBuilder.requiredWidth(imageView.width)
         requestBuilder.requiredHeight(imageView.height)
-        val request = requestBuilder.build()
-        avatar.enqueueTask(
+        request = requestBuilder.build()
+        future = avatar.submitJob(
+            this,
+            imageView,
             ImageLoadingTask(
                 avatar.bitmapUtils,
                 avatar.mainThreadHandler,
@@ -24,18 +30,22 @@ class TaskBuilder(private val avatar: Avatar) {
         )
     }
 
-    fun url(url: String): TaskBuilder {
+    fun url(url: String): AvatarJob {
         requestBuilder.url(url)
         return this
     }
 
-    fun placeholder(placeholder: Int): TaskBuilder {
+    fun placeholder(placeholder: Int): AvatarJob {
         requestBuilder.placeholder(placeholder)
         return this
     }
 
-    fun errorImage(errorRes: Int): TaskBuilder {
+    fun errorImage(errorRes: Int): AvatarJob {
         requestBuilder.errorImage(errorRes)
         return this
+    }
+
+    fun cancel() {
+        future.cancel(true)
     }
 }
