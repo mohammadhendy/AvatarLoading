@@ -6,8 +6,6 @@ import android.graphics.RectF
 import android.graphics.Paint.Join
 import android.graphics.Paint.Cap
 
-
-
 class ImageProgressDrawable(
     private val progressColor: Int = Color.parseColor("#80FF08"),
     private val progressBackgroundColor: Int = Color.parseColor("#B3B3B3"),

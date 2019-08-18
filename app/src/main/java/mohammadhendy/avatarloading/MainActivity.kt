@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         Avatar.load("https://picsum.photos/id/$imageId/1024/1024/")
             .placeholder(R.drawable.ic_person_black_24dp)
             .errorImage(R.drawable.ic_error)
+            .showProgress(true)
             .into(avatar_image_view)
     }
 

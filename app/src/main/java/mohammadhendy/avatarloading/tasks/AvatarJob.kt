@@ -45,6 +45,21 @@ class AvatarJob(private val avatar: Avatar) {
         return this
     }
 
+    fun showProgress(showProgress: Boolean): AvatarJob {
+        requestBuilder.showProgress(showProgress)
+        return this
+    }
+
+    fun memoryCache(memoryCache: Boolean): AvatarJob {
+        requestBuilder.memoryCache(memoryCache)
+        return this
+    }
+
+    fun diskCache(diskCache: Boolean): AvatarJob {
+        requestBuilder.diskCache(diskCache)
+        return this
+    }
+
     fun cancel() {
         future.cancel(true)
     }

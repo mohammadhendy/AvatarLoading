@@ -1,6 +1,7 @@
 package mohammadhendy.avatarloading.avatar
 
 import android.support.annotation.DrawableRes
+import mohammadhendy.avatarloading.tasks.AvatarJob
 
 data class Request(
     val url: String,
@@ -19,7 +20,7 @@ class RequestBuilder() {
     @DrawableRes private var errorImage: Int? = null
     private var memoryCache: Boolean = true
     private var diskCache: Boolean = false
-    private var showProgress: Boolean = true
+    private var showProgress: Boolean = false
     private var requiredWidth: Int = 256
     private var requiredHeight: Int =  256
 
@@ -45,6 +46,21 @@ class RequestBuilder() {
 
     fun requiredHeight(height: Int): RequestBuilder {
         this.requiredHeight = height
+        return this
+    }
+
+    fun showProgress(showProgress: Boolean): RequestBuilder {
+        this.showProgress = showProgress
+        return this
+    }
+
+    fun memoryCache(memoryCache: Boolean): RequestBuilder {
+        this.memoryCache = memoryCache
+        return this
+    }
+
+    fun diskCache(diskCache: Boolean): RequestBuilder {
+        this.diskCache = diskCache
         return this
     }
 
