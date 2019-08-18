@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AvatarLoading</string>
+    <string name="next_button">Load next Avatar</string>
+</resources>
