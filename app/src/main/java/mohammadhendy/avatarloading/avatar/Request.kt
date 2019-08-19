@@ -18,7 +18,7 @@ class RequestBuilder() {
     private lateinit var url: String
     @DrawableRes private var placeholder: Int? = null
     @DrawableRes private var errorImage: Int? = null
-    private var memoryCache: Boolean = true
+    private var memoryCache: Boolean = false
     private var diskCache: Boolean = false
     private var showProgress: Boolean = false
     private var requiredWidth: Int = 256

@@ -9,6 +9,9 @@ import mohammadhendy.avatarloading.tasks.ImageLoadingTask
 import java.util.concurrent.*
 import android.os.Looper
 import android.widget.ImageView
+import mohammadhendy.avatarloading.cache.Cache
+import mohammadhendy.avatarloading.cache.DiskCache
+import mohammadhendy.avatarloading.cache.MemoryCache
 import mohammadhendy.avatarloading.utils.BitmapUtils
 import mohammadhendy.avatarloading.tasks.AvatarJob
 import mohammadhendy.avatarloading.utils.Logger
@@ -25,20 +28,36 @@ object Avatar : LifecycleObserver {
     private val threadPoolExecutor: ThreadPoolExecutor by lazy {
         ThreadPoolExecutor(CORE_THREADS_COUNT, MAX_THREADS_COUNT, KEEP_ALIVE_TIME, TimeUnit.SECONDS, loadingTasksQueue)
     }
-    private var context: Context? = null
     private val jobsMap = mutableMapOf<ImageView, AvatarJob>()
+    private var context: Context? = null
     lateinit var bitmapUtils: BitmapUtils
+    lateinit var memoryCache: MemoryCache
+    lateinit var diskCache: DiskCache
 
     /**
      * Must be called before using any other function
      * @param context application context
      */
-    fun init(context: Context) {
+    fun init(
+        context: Context,
+        maxDiskCacheSizeKBytes: Int,
+        maxDiskCacheItemCount: Int,
+        maxMemoryCacheSizeKBytes: Int,
+        maxMemoryCacheItemCount: Int
+    ) {
         if (this.context != null) {
             throw IllegalStateException("Already initialised!")
         }
+
+        if (maxDiskCacheItemCount <= 0 || maxMemoryCacheItemCount <= 0 || maxDiskCacheSizeKBytes <= 0 || maxMemoryCacheSizeKBytes <= 0) {
+            throw IllegalArgumentException("Cache size/count are invalid")
+        }
+
         this.context = context
         bitmapUtils = BitmapUtils(context.resources)
+
+        memoryCache = MemoryCache(maxMemoryCacheSizeKBytes, maxMemoryCacheItemCount)
+        diskCache = DiskCache(context.cacheDir, maxDiskCacheSizeKBytes, maxDiskCacheItemCount)
     }
 
     fun load(url: String) : AvatarJob {

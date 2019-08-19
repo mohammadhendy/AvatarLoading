@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
             .placeholder(R.drawable.ic_person_black_24dp)
             .errorImage(R.drawable.ic_error)
             .showProgress(true)
+            .memoryCache(true)
             .into(avatar_image_view)
     }
 

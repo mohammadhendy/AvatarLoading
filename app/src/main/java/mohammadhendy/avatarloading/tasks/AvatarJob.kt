@@ -21,11 +21,13 @@ class AvatarJob(private val avatar: Avatar) {
             this,
             imageView,
             ImageLoadingTask(
-                avatar.bitmapUtils,
-                avatar.mainThreadHandler,
-                request,
-                ImageViewTask(imageView, request.showProgress),
-                request.errorImage?.let { DisplayErrorTask(imageView, it) }
+                bitmapUtils = avatar.bitmapUtils,
+                mainThreadHandler = avatar.mainThreadHandler,
+                request = request,
+                imageViewTask = ImageViewTask(imageView, request.showProgress),
+                displayErrorTask = request.errorImage?.let { DisplayErrorTask(imageView, it) },
+                memoryCache = avatar.memoryCache,
+                diskCache = avatar.diskCache
             )
         )
     }

@@ -61,7 +61,6 @@ class BitmapUtils(private val resources: Resources) {
         )
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(bitmap, rect, rect, paint)
-        bitmap.recycle()
         return output
     }
 
