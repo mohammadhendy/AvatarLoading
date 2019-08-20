@@ -1,5 +1,6 @@
 package mohammadhendy.avatarloading
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,6 +16,10 @@ class MainActivity : AppCompatActivity() {
         loadNextImage(currentImageId++)
         next_button.setOnClickListener {
             loadNextImage(currentImageId++)
+        }
+
+        show_grid_button.setOnClickListener {
+            startActivity(Intent(this, GridActivity::class.java))
         }
     }
 

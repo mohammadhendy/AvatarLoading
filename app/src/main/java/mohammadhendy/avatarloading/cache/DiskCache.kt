@@ -4,6 +4,10 @@ import mohammadhendy.avatarloading.utils.Logger
 import mohammadhendy.avatarloading.utils.sizeKBytes
 import java.io.File
 
+/**
+ * Each cached file has an entry object that contains key and size
+ * Also, entry contains the loaded file data when get/put is executed
+ */
 data class CacheEntry(val key:String, val sizeKBytes: Int?, var data: ByteArray?) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -47,7 +51,7 @@ class DiskCache(
             loadCacheEntries(cacheEntriesFile)
         }
 
-        val entry = linkedHashMap[key] ?: return null
+        val entry = linkedHashMap[key]?.copy(data = null) ?: return null
         if (entry.binaryFile.exists()) {
             entry.data = entry.binaryFile.readBytes()
         } else {
@@ -64,7 +68,7 @@ class DiskCache(
                 value.binaryFile.createNewFile()
             }
             value.binaryFile.writeBytes(it)
-            linkedHashMap[key] = value
+            linkedHashMap[key] = value.copy(data = null)
             saveCacheEntries(cacheEntriesFile)
         }
     }
@@ -77,7 +81,7 @@ class DiskCache(
 
     override fun isCacheEmpty(): Boolean = linkedHashMap.isEmpty()
 
-    override fun sizeOf(key: String, value: CacheEntry): Int = value.data?.sizeKBytes() ?: 0
+    override fun sizeOf(key: String, value: CacheEntry): Int = value.sizeKBytes ?: 0
 
     override fun nextRemovableCandidate(): String = linkedHashMap.entries.iterator().next().key.also { Logger.d(
         TAG, "nextRemovableCandidate is $it") }
