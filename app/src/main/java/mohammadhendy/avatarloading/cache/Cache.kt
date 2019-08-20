@@ -1,8 +1,8 @@
 package mohammadhendy.avatarloading.cache
 
 abstract class Cache<K, V>(private val maxSize: Int, private val maxCount: Int) {
-    private var size: Int = 0
-    private var count: Int = 0
+    protected var size: Int = 0
+    protected var count: Int = 0
 
     fun get(key: K): V? {
         synchronized(this) {
@@ -11,12 +11,15 @@ abstract class Cache<K, V>(private val maxSize: Int, private val maxCount: Int) 
     }
 
     fun put(key: K, value: V) {
-        if (sizeOf(key, value) > maxSize) {
+        val addedSize = sizeOf(key, value)
+        if (addedSize > maxSize) {
             remove(key)
             return
         }
         synchronized(this) {
             saveValue(key, value)
+            size += addedSize
+            count++
             assureMaxSizeAndCount(maxSize, maxCount)
         }
     }
@@ -44,10 +47,8 @@ abstract class Cache<K, V>(private val maxSize: Int, private val maxCount: Int) 
     protected abstract fun nextRemovableCandidate(): K
 
     private fun assureMaxSizeAndCount(maxSize: Int, maxCount: Int) {
-        while (true) {
-            val key: K
-            val value: V
             synchronized(this) {
+                while (true) {
                 if (size < 0 || isCacheEmpty() && size != 0) {
                     throw IllegalStateException("inconsistent size!")
                 }
@@ -65,7 +66,7 @@ abstract class Cache<K, V>(private val maxSize: Int, private val maxCount: Int) 
         }
     }
 
-    private fun safeDelete(key: K): V?  = delete(key)?.also {
+    protected fun safeDelete(key: K): V?  = delete(key)?.also {
         size -= sizeOf(key, it)
         count--
     }

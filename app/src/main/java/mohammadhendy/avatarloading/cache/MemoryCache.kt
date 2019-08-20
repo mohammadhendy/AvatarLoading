@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import mohammadhendy.avatarloading.utils.sizeKBytes
 
 class MemoryCache(maxSizeKBytes: Int, maxEntryCount: Int) : Cache<String, Bitmap>(maxSizeKBytes, maxEntryCount) {
-    private val linkedHashMap: LinkedHashMap<String, Bitmap> = LinkedHashMap<String, Bitmap>(
+    private val linkedHashMap: LinkedHashMap<String, Bitmap> = LinkedHashMap(
         0,
         0.5f,
         true

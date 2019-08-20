@@ -1,27 +1,31 @@
 package mohammadhendy.avatarloading.utils
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import java.lang.Exception
 
 
-class BitmapUtils(private val resources: Resources) {
+class BitmapUtils(private val context: Context) {
     companion object {
         private const val TAG = "BitmapUtils"
     }
 
     fun decodeResource(resId: Int): Bitmap? = try {
-        val drawable = resources.getDrawable(resId)
+        val drawable = ContextCompat.getDrawable(context, resId)
         if (drawable is BitmapDrawable) {
             drawable.bitmap
         }
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        bitmap
+        drawable?.let {
+            val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+            bitmap
+        }
     } catch (e: Exception) {
         null
     }

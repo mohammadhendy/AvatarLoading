@@ -54,7 +54,7 @@ object Avatar : LifecycleObserver {
         }
 
         this.context = context
-        bitmapUtils = BitmapUtils(context.resources)
+        bitmapUtils = BitmapUtils(context)
 
         memoryCache = MemoryCache(maxMemoryCacheSizeKBytes, maxMemoryCacheItemCount)
         diskCache = DiskCache(context.cacheDir, maxDiskCacheSizeKBytes, maxDiskCacheItemCount)

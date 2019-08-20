@@ -2,17 +2,15 @@ package mohammadhendy.avatarloading.tasks
 
 import android.graphics.Bitmap
 import android.os.Handler
-import mohammadhendy.avatarloading.utils.BitmapUtils
-import mohammadhendy.avatarloading.utils.Logger
 import mohammadhendy.avatarloading.avatar.Request
+import mohammadhendy.avatarloading.cache.CacheEntry
 import mohammadhendy.avatarloading.cache.DiskCache
 import mohammadhendy.avatarloading.cache.MemoryCache
 import mohammadhendy.avatarloading.download.LoadingError
 import mohammadhendy.avatarloading.download.DownloadProgressCallback
 import mohammadhendy.avatarloading.download.DownloadResultCallback
 import mohammadhendy.avatarloading.download.ImageDownloader
-import mohammadhendy.avatarloading.utils.checkInterrupted
-import mohammadhendy.avatarloading.utils.key
+import mohammadhendy.avatarloading.utils.*
 import kotlin.Exception
 
 class ImageLoadingTask(
@@ -42,6 +40,14 @@ class ImageLoadingTask(
                 }
             }
 
+            if (request.diskCache) {
+                val data = diskCache.get(request.key())?.data
+                if (data != null) {
+                    onLoadFromDisk(data)
+                    return
+                }
+            }
+
             val imageDownloader = ImageDownloader(request.url, this, this)
             imageDownloader.download()
         } catch (e: InterruptedException) {
@@ -50,23 +56,7 @@ class ImageLoadingTask(
     }
 
     override fun onDownloadCompleted(data: ByteArray) {
-        checkInterrupted()
-        try {
-            bitmapUtils.decodeSampledBitmap(data, request.requiredWidth, request.requiredHeight)?.let {
-                if (request.memoryCache) {
-                    memoryCache.put(request.key(), it)
-                }
-                imageViewTask.bitmap = bitmapUtils.getCircle(it)
-            }
-            imageViewTask.showProgress = false
-            checkInterrupted()
-            mainThreadHandler.post(imageViewTask)
-        } catch (e: Exception) {
-            Logger.e(TAG, "Exception when decode btimap", e)
-            displayErrorTask?.let {
-                mainThreadHandler.post(it)
-            }
-        }
+        decodeAndNotifyUI(data, false)
     }
 
     override fun onDownloadError(error: LoadingError) {
@@ -89,5 +79,33 @@ class ImageLoadingTask(
         imageViewTask.showProgress = false
         checkInterrupted()
         mainThreadHandler.post(imageViewTask)
+    }
+
+    private fun onLoadFromDisk(data: ByteArray) {
+        decodeAndNotifyUI(data, true)
+    }
+
+    private fun decodeAndNotifyUI(data: ByteArray, noDiskCache: Boolean) {
+        checkInterrupted()
+        try {
+            bitmapUtils.decodeSampledBitmap(data, request.requiredWidth, request.requiredHeight)?.let {
+                if (request.memoryCache) {
+                    memoryCache.put(request.key(), it)
+                }
+                imageViewTask.bitmap = bitmapUtils.getCircle(it)
+            }
+            imageViewTask.showProgress = false
+            checkInterrupted()
+            mainThreadHandler.post(imageViewTask)
+            if (!noDiskCache && request.diskCache) {
+                val key = request.key()
+                diskCache.put(key, CacheEntry(key, data.sizeKBytes(), data))
+            }
+        } catch (e: Exception) {
+            Logger.e(TAG, "Exception when decode btimap", e)
+            displayErrorTask?.let {
+                mainThreadHandler.post(it)
+            }
+        }
     }
 }
