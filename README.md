@@ -1,5 +1,7 @@
 # Avatar Loading
 
+![Example](avatar.gif)
+
 This project is a library for easier loading of Avatar images in your app with the following features:
 1. Load images from Url and shape it in a circle
 2. Placeholder image is displayed until loading completes
@@ -41,8 +43,7 @@ For automatic canceling of pending loading requests Avatar must be set as Lifecy
 ```KOTLIN
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)       
-        lifecycle.addObserver(Avatar)        
-        ...
+        lifecycle.addObserver(Avatar)               
     }
     
     override fun onDestroy() {
@@ -92,4 +93,4 @@ This view is a simple GridView that displays only images in its items.
 * Write more tests
 * Handle ExifOrientation
 * Add support for ScaleTypes
-* Support 2 gradient progress color  
+* Support 2 gradient progress color
