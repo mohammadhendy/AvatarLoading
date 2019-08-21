@@ -1,9 +1,9 @@
 package mohammadhendy.avatarloading
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_image.view.avatar_image_view
 import mohammadhendy.avatarloading.avatar.Avatar
 
@@ -20,10 +20,10 @@ class MyAdapter(private val images: Array<String>) :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         Avatar.load(images[position])
-            .placeholder(R.drawable.ic_person_black_24dp)
+            .placeholder(R.drawable.ic_placeholder)
             .errorImage(R.drawable.ic_error)
             .showProgress(true)
-            .memoryCache(false)
+            .memoryCache(true)
             .diskCache(true)
             .into(holder.itemView.avatar_image_view)
     }

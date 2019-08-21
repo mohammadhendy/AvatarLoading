@@ -1,7 +1,7 @@
 package mohammadhendy.avatarloading.cache
 
+import androidx.annotation.VisibleForTesting
 import mohammadhendy.avatarloading.utils.Logger
-import mohammadhendy.avatarloading.utils.sizeKBytes
 import java.io.File
 
 /**
@@ -34,8 +34,8 @@ class DiskCache(
     maxEntryCount: Int
 ) : Cache<String, CacheEntry>(maxSizeKBytes, maxEntryCount) {
     companion object {
-        private const val CACHE_NAME = "Avatars"
-        private const val CACHE_ENTRIES_NAME = "entries"
+        const val CACHE_NAME = "Avatars"
+        const val CACHE_ENTRIES_NAME = "entries"
         private const val TAG = "DiskCache"
     }
     private val cachePath = File(cacheDirectory, CACHE_NAME).also { it.mkdirs() }
@@ -61,8 +61,9 @@ class DiskCache(
         return entry
     }
 
-    override fun saveValue(key: String, value: CacheEntry) {
+    override fun saveValue(key: String, value: CacheEntry): CacheEntry? {
         Logger.d(TAG, "save new cache to file ${value.binaryFile}")
+        val oldEntry = linkedHashMap[key]?.copy()
         value.data?.let {
             if (!value.binaryFile.exists()) {
                 value.binaryFile.createNewFile()
@@ -71,6 +72,7 @@ class DiskCache(
             linkedHashMap[key] = value.copy(data = null)
             saveCacheEntries(cacheEntriesFile)
         }
+        return oldEntry
     }
 
     override fun delete(key: String): CacheEntry? = linkedHashMap.remove(key)?.also {
@@ -131,6 +133,9 @@ class DiskCache(
             }
         }
     }
+
+    @VisibleForTesting
+    fun listFiles() = cachePath.listFiles()
 
     private val CacheEntry.binaryFile
     get() = File(cachePath, "$key")

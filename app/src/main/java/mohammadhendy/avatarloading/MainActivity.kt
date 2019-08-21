@@ -1,8 +1,8 @@
 package mohammadhendy.avatarloading
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import mohammadhendy.avatarloading.avatar.Avatar
 
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadNextImage(imageId: Int) {
         Avatar.load("https://picsum.photos/id/$imageId/1024/1024/")
-            .placeholder(R.drawable.ic_person_black_24dp)
+            .placeholder(R.drawable.ic_placeholder)
             .errorImage(R.drawable.ic_error)
             .showProgress(true)
             .memoryCache(false)

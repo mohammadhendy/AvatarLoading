@@ -1,10 +1,8 @@
 package mohammadhendy.avatarloading
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_grid.*
-import kotlinx.android.synthetic.main.activity_main.*
 import mohammadhendy.avatarloading.avatar.Avatar
 
 class GridActivity : AppCompatActivity() {

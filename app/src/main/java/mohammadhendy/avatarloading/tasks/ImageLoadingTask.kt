@@ -2,6 +2,8 @@ package mohammadhendy.avatarloading.tasks
 
 import android.graphics.Bitmap
 import android.os.Handler
+import androidx.annotation.WorkerThread
+import androidx.core.graphics.drawable.toBitmap
 import mohammadhendy.avatarloading.avatar.Request
 import mohammadhendy.avatarloading.cache.CacheEntry
 import mohammadhendy.avatarloading.cache.DiskCache
@@ -25,11 +27,15 @@ class ImageLoadingTask(
     companion object {
         private const val TAG = "ImageLoadingTask"
     }
+
+    @WorkerThread
     override fun run() {
         try {
             checkInterrupted()
             if (request.placeholder != null) {
-                imageViewTask.bitmap = bitmapUtils.decodeResource(request.placeholder)?.let { bitmapUtils.getCircle(it) }
+                imageViewTask.bitmap = bitmapUtils.decodeResource(request.placeholder)?.toBitmap()?.let { bitmap ->
+                    bitmapUtils.getCircle(bitmap)
+                }
                 mainThreadHandler.post(imageViewTask)
             }
             if (request.memoryCache) {
@@ -89,10 +95,12 @@ class ImageLoadingTask(
         checkInterrupted()
         try {
             bitmapUtils.decodeSampledBitmap(data, request.requiredWidth, request.requiredHeight)?.let {
+                imageViewTask.bitmap = bitmapUtils.getCircle(it)
                 if (request.memoryCache) {
                     memoryCache.put(request.key(), it)
+                } else {
+                    it.recycle()
                 }
-                imageViewTask.bitmap = bitmapUtils.getCircle(it)
             }
             imageViewTask.showProgress = false
             checkInterrupted()
@@ -102,7 +110,7 @@ class ImageLoadingTask(
                 diskCache.put(key, CacheEntry(key, data.sizeKBytes(), data))
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "Exception when decode btimap", e)
+            Logger.e(TAG, "Exception when decode bitmap", e)
             displayErrorTask?.let {
                 mainThreadHandler.post(it)
             }

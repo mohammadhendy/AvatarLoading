@@ -9,6 +9,6 @@
         android:layout_gravity="center"
         android:layout_width="@dimen/small_avatar_size"
         android:layout_height="@dimen/small_avatar_size"
-        tools:src="@drawable/ic_person_black_24dp"/>
+        tools:src="@drawable/ic_placeholder"/>
 
 </FrameLayout>

@@ -1,15 +1,14 @@
 package mohammadhendy.avatarloading.avatar
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.os.Handler
 import mohammadhendy.avatarloading.tasks.ImageLoadingTask
 import java.util.concurrent.*
 import android.os.Looper
 import android.widget.ImageView
-import mohammadhendy.avatarloading.cache.Cache
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import mohammadhendy.avatarloading.cache.DiskCache
 import mohammadhendy.avatarloading.cache.MemoryCache
 import mohammadhendy.avatarloading.utils.BitmapUtils

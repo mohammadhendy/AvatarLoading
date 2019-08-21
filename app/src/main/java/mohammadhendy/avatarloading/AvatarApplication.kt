@@ -9,7 +9,7 @@ class AvatarApplication : Application() {
         private val maxMemoryCacheSizeKB = (Runtime.getRuntime().maxMemory() / 1024 / 8).toInt()
         private const val maxDiskCacheSizeKB = 10 * 1024
         private const val maxMemoryCacheCount = 100
-        private const val maxDiskCacheCount = 100
+        private const val maxDiskCacheCount = 110
     }
     override fun onCreate() {
         super.onCreate()

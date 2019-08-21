@@ -1,5 +1,6 @@
 package mohammadhendy.avatarloading.download
 
+import androidx.annotation.WorkerThread
 import mohammadhendy.avatarloading.utils.Logger
 import java.io.*
 import java.net.HttpURLConnection
@@ -17,6 +18,7 @@ class ImageDownloader(
         private const val BUFFER_SIZE = 1024
     }
 
+    @WorkerThread
     fun download() {
         Logger.d(TAG, "download image: $imageUrl")
         var connection: HttpURLConnection? = null

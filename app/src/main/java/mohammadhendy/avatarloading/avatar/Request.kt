@@ -1,6 +1,6 @@
 package mohammadhendy.avatarloading.avatar
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import mohammadhendy.avatarloading.tasks.AvatarJob
 
 data class Request(

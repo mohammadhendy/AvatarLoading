@@ -1,12 +1,10 @@
 package mohammadhendy.avatarloading.utils
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.support.v4.content.ContextCompat
+import android.graphics.drawable.Drawable
 import android.util.Log
-import java.lang.Exception
+import androidx.core.content.ContextCompat
 
 
 class BitmapUtils(private val context: Context) {
@@ -14,21 +12,7 @@ class BitmapUtils(private val context: Context) {
         private const val TAG = "BitmapUtils"
     }
 
-    fun decodeResource(resId: Int): Bitmap? = try {
-        val drawable = ContextCompat.getDrawable(context, resId)
-        if (drawable is BitmapDrawable) {
-            drawable.bitmap
-        }
-        drawable?.let {
-            val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            drawable.setBounds(0, 0, canvas.width, canvas.height)
-            drawable.draw(canvas)
-            bitmap
-        }
-    } catch (e: Exception) {
-        null
-    }
+    fun decodeResource(resId: Int): Drawable? = ContextCompat.getDrawable(context, resId)
 
     fun decodeSampledBitmap(byteArray: ByteArray, requiredWidth: Int, requiredHeight: Int): Bitmap? {
         val options = BitmapFactory.Options()
@@ -45,7 +29,7 @@ class BitmapUtils(private val context: Context) {
     fun getCircle(bitmap: Bitmap): Bitmap? {
         var output: Bitmap
         try {
-            output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_4444)
+            output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
         } catch (e: OutOfMemoryError) {
             Log.e(TAG, "Out of memory in getCircle()")
             return null

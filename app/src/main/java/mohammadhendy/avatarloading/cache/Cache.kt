@@ -17,7 +17,11 @@ abstract class Cache<K, V>(private val maxSize: Int, private val maxCount: Int) 
             return
         }
         synchronized(this) {
-            saveValue(key, value)
+            val oldEntry = saveValue(key, value)
+            oldEntry?.let {
+                size -= sizeOf(key, it)
+                count--
+            }
             size += addedSize
             count++
             assureMaxSizeAndCount(maxSize, maxCount)
@@ -36,7 +40,7 @@ abstract class Cache<K, V>(private val maxSize: Int, private val maxCount: Int) 
 
     protected abstract fun loadValue(key: K): V?
 
-    protected abstract fun saveValue(key: K, value: V)
+    protected abstract fun saveValue(key: K, value: V): V?
 
     protected abstract fun delete(key: K): V?
 

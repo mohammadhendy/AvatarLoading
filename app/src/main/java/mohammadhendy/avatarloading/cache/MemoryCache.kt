@@ -12,8 +12,10 @@ class MemoryCache(maxSizeKBytes: Int, maxEntryCount: Int) : Cache<String, Bitmap
 
     override fun loadValue(key: String): Bitmap? = linkedHashMap[key]
 
-    override fun saveValue(key: String, value: Bitmap) {
+    override fun saveValue(key: String, value: Bitmap): Bitmap? {
+        val oldEntry = linkedHashMap[key]
         linkedHashMap[key] = value
+        return oldEntry
     }
 
     override fun delete(key: String): Bitmap? = linkedHashMap.remove(key)
